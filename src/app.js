@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const authRoutes = require('./apis/routes/authRoute');
-const { connectMongoDB, connetPostgres } = require('./config/database');
+const userRoutes = require("./apis/routes/userRoute");
+const { connectMongoDB, connetPostgres } = require("./config/database");
 
 const app = express();
 
@@ -12,8 +13,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/auth', authRoutes);
-
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 // Connect to databases
 connectMongoDB();
 connetPostgres();
