@@ -1,6 +1,6 @@
 const Payroll = require('../../models/payroll');
 const PDFDocument = require('pdfkit');
-const { sequelize } = require('../config/database');
+const { sequelize } = require('../../config/database');
 
 class PayrollController {
     // Tạo bảng lương mới
