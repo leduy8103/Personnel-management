@@ -1,4 +1,6 @@
 const { sequelize } = require('../config/database');
+const Attendance = require('./Attendance');
+const Overtime = require('./Overtime');
 const User = require('./User');
 
 const syncDatabase = async () => {
@@ -16,3 +18,5 @@ const syncDatabase = async () => {
 syncDatabase();
 
 module.exports = { User };
+module.exports = { Attendance };
+module.exports = { Overtime };
