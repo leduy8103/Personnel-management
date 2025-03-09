@@ -33,10 +33,17 @@ const LeaveRequest = sequelize.define("LeaveRequest", {
     type: DataTypes.ENUM("Pending", "Approved", "Rejected"),
     defaultValue: "Pending",
   },
+  reject_reason: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+}, {
+  tableName: 'leave_requests',
+  timestamps: true
 });
 
 module.exports = LeaveRequest;

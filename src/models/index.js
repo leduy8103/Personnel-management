@@ -8,7 +8,7 @@ const syncDatabase = async () => {
     await sequelize.authenticate();
     console.log('✅ Database connected successfully.');
     
-    await sequelize.sync({ force: true }); // Xóa & tạo lại bảng
+    await sequelize.sync({ alter: true }); // Chỉ cập nhật bảng nếu có thay đổi
     console.log('✅ All models were synchronized successfully.');
   } catch (error) {
     console.error('❌ Unable to connect to the database:', error);
