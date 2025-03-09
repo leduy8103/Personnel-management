@@ -12,6 +12,7 @@ const payrollRoutes = require('./apis/routes/payrollRoute');
 const chatRoutes = require('./apis/routes/chatRoute');
 
 
+const leaveRoutes = require('./apis/routes/leaveRoute');
 const { connectMongoDB, connetPostgres } = require('./config/database');
 
 
@@ -32,6 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/chat', chatRoutes);
 
+app.use('/api/leave', leaveRoutes);
 // Connect to databases
 connectMongoDB();
 connetPostgres();

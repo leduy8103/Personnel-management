@@ -20,6 +20,8 @@ const { sequelize } = require('../config/database');
 const Payroll = require('./payroll');
 const Chat = require('./chat');
 const User = require('./User');
+const LeaveRequest = require('./leaveRequest');
+const LeaveBalance = require('./leaveBalance');
 
 const syncDatabase = async () => {
   try {
@@ -35,4 +37,4 @@ const syncDatabase = async () => {
 
 syncDatabase();
 
-module.exports = { User, Project, Task, ProjectMember, Payroll, Chat  };
+module.exports = { User, Project, Task, ProjectMember, Payroll, Chat, LeaveRequest, LeaveBalance  };

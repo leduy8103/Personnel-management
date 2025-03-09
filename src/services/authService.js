@@ -16,6 +16,9 @@ const authService = {
     });
     const resetPasswordLink = `${FRONTEND_URL}/reset-password?token=${resetToken}`;
 
+    // Khởi tạo số ngày nghỉ phép cho user mới
+    await leaveService.initializeLeaveBalance(newUser.id);
+
     // Send reset password email
     await sendAccountCreatedEmail(user.email, resetPasswordLink);
 
