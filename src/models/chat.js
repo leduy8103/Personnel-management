@@ -1,13 +1,10 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
-const User = require('./User');
+const mongoose = require("mongoose");
 
-const Chat = sequelize.define('Chat', {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  sender_id: { type: DataTypes.INTEGER, references: { model: User, key: 'id' }, allowNull: false },
-  receiver_id: { type: DataTypes.INTEGER, references: { model: User, key: 'id' }, allowNull: false },
-  message: { type: DataTypes.TEXT, allowNull: false },
-  timestamp: { type: DataTypes.DATE, defaultValue: Sequelize.NOW },
-}, { tableName: 'chats', timestamps: false });
+const ChatSchema = new mongoose.Schema({
+  sender_id: { type: String, required: true },
+  receiver_id: { type: String, required: true },
+  message: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now }
+});
 
-module.exports = Chat;
+module.exports = mongoose.model("Chat", ChatSchema);

@@ -1,6 +1,5 @@
 const { sequelize } = require('../config/database');
 const Payroll = require('./payroll');
-const Chat = require('./chat');
 const User = require('./User');
 
 const syncDatabase = async () => {
@@ -17,4 +16,4 @@ const syncDatabase = async () => {
 
 syncDatabase();
 
-module.exports = { User, Payroll, Chat };
+module.exports = { User, Payroll };
