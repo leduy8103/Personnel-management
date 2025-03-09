@@ -8,52 +8,83 @@ const userService = {
   },
 
   getAllUsers: async () => {
-    const users = await User.findAll();
+    const users = await User.findAll({ where: { status: "Active" } });
+    if (users.length === 0) {
+      throw new Error("No active users found");
+    }
     return users;
   },
 
   getUserById: async (id) => {
-    const user = await User.findByPk(id);
+    const user = await User.findOne({ where: { id, status: "Active" } });
+    if (!user) {
+      throw new Error("User not found");
+    }
     return user;
   },
 
   getUserByName: async (name) => {
-    const user = await User.findOne({ where: { name } });
+    const user = await User.findOne({ where: { name, status: "Active" } });
+    if (!user) {
+      throw new Error("User not found");
+    }
     return user;
   },
 
   getUserByEmail: async (email) => {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email, status: "Active" } });
+    if (!user) {
+      throw new Error("User not found");
+    }
     return user;
   },
 
   getUserByRole: async (role) => {
-    const users = await User.findAll({ where: { role } });
+    const users = await User.findAll({ where: { role, status: "Active" } });
+    if (users.length === 0) {
+      throw new Error("No active users found with the specified role");
+    }
     return users;
   },
 
   getUserByStatus: async (status) => {
     const users = await User.findAll({ where: { status } });
+    if (users.length === 0) {
+      throw new Error("No users found with the specified status");
+    }
     return users;
   },
 
   getUserByDepartment: async (department) => {
-    const users = await User.findAll({ where: { department } });
+    const users = await User.findAll({
+      where: { department, status: "Active" },
+    });
+    if (users.length === 0) {
+      throw new Error("No active users found in the specified department");
+    }
     return users;
   },
 
   getUserByPosition: async (position) => {
-    const users = await User.findAll({ where: { position } });
+    const users = await User.findAll({ where: { position, status: "Active" } });
+    if (users.length === 0) {
+      throw new Error("No active users found with the specified position");
+    }
     return users;
   },
 
   getUserByMultipleFields: async (fields) => {
-    const users = await User.findAll({ where: { ...fields } });
+    const users = await User.findAll({
+      where: { ...fields, status: "Active" },
+    });
+    if (users.length === 0) {
+      throw new Error("No active users found with the specified fields");
+    }
     return users;
   },
 
   updateUser: async (id, userData) => {
-    const user = await User.findByPk(id);
+    const user = await User.findOne({ where: { id, status: "Active" } });
     if (!user) {
       throw new Error("User not found");
     }
@@ -63,7 +94,7 @@ const userService = {
   },
 
   deleteUser: async (id) => {
-    const user = await User.findByPk(id);
+    const user = await User.findOne({ where: { id, status: "Active" } });
     if (!user) {
       throw new Error("User not found");
     }
@@ -85,6 +116,16 @@ const userService = {
     };
     const uploadedFile = await EmployeeDocument.create(fileData);
     return uploadedFile;
+  },
+
+  blockUser: async (id) => {
+    const user = await User.findOne({ where: { id, status: "Active" } });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    user.status = "Inactive";
+    await user.save();
+    return user;
   },
 };
 
