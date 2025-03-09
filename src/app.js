@@ -3,7 +3,11 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const authRoutes = require('./apis/routes/authRoute');
 const payrollRoutes = require('./apis/routes/payrollRoute');
+const chatRoutes = require('./apis/routes/chatRoute');
+
+
 const { connectMongoDB, connetPostgres } = require('./config/database');
+
 
 const app = express();
 
@@ -15,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/payroll', payrollRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Connect to databases
 connectMongoDB();

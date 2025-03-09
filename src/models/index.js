@@ -1,12 +1,13 @@
 const { sequelize } = require('../config/database');
 const Payroll = require('./payroll');
+const Chat = require('./chat');
 const User = require('./User');
 
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
     console.log('✅ Database connected successfully.');
-    
+
     await sequelize.sync({ force: true }); // Xóa & tạo lại bảng
     console.log('✅ All models were synchronized successfully.');
   } catch (error) {
@@ -16,4 +17,4 @@ const syncDatabase = async () => {
 
 syncDatabase();
 
-module.exports = { User , Payroll };
+module.exports = { User, Payroll, Chat };
