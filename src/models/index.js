@@ -23,6 +23,7 @@ const User = require('./User');
 const LeaveRequest = require('./leaveRequest');
 const LeaveBalance = require('./leaveBalance');
 
+const Performance_reviews = require('./performance_reviews');
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -37,4 +38,4 @@ const syncDatabase = async () => {
 
 syncDatabase();
 
-module.exports = { User, Project, Task, ProjectMember, Payroll, Chat, LeaveRequest, LeaveBalance  };
+module.exports = { User, Project, Task, ProjectMember, Payroll, Chat, LeaveRequest, LeaveBalance, Performance_reviews };

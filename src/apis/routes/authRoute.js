@@ -6,6 +6,6 @@ const authController = new AuthController();
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
-router.get('/profile', authController.getUserProfile);
+router.post('/profile', authController.getUserProfile);
 
 module.exports = router;
