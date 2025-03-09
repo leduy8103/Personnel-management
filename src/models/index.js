@@ -1,6 +1,6 @@
 const { sequelize } = require('../config/database');
 const User = require('./User');
-
+const Performance_reviews = require('./performance_reviews');
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -15,4 +15,4 @@ const syncDatabase = async () => {
 
 syncDatabase();
 
-module.exports = { User };
+module.exports = { User, Performance_reviews };
