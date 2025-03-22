@@ -3,6 +3,7 @@ const User = require('../models/User');
 
 const TAX_RATE = 0.1; // Thuế thu nhập cá nhân 10%
 const INSURANCE_RATE = 0.08; // Bảo hiểm xã hội 8%
+//const HOURS_PER_MONTH = 22 * 8; // 22 ngày làm việc, 8 giờ mỗi ngày
 
 const payrollService = {
     createPayroll: async (payrollData) => {
@@ -16,12 +17,16 @@ const payrollService = {
         // Tính lương thực nhận
         const net_salary = base_salary + (allowances || 0) - totalDeductions;
 
+        // Tính lương theo giờ
+        //const hourly_rate = base_salary / HOURS_PER_MONTH;
+
         return await Payroll.create({
             employee_id,
             base_salary,
             allowances,
             deductions: totalDeductions, // Bao gồm thuế + bảo hiểm + các khoản khấu trừ khác
             net_salary,
+            //hourly_rate,
             pay_period
         });
     },

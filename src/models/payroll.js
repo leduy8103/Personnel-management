@@ -9,6 +9,7 @@ const Payroll = sequelize.define('Payroll', {
     allowances: { type: DataTypes.FLOAT, defaultValue: 0 },
     deductions: { type: DataTypes.FLOAT, defaultValue: 0 },
     net_salary: { type: DataTypes.FLOAT, allowNull: false },
+    //hourly_rate: { type: DataTypes.FLOAT, allowNull: true },
     pay_period: { type: DataTypes.STRING, allowNull: false },
     created_at: { type: DataTypes.DATE, defaultValue: Sequelize.NOW },
 }, { tableName: 'payrolls', timestamps: false });

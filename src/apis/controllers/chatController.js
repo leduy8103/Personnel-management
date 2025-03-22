@@ -1,18 +1,6 @@
 const chatService = require("../../services/chatService");
 
 class ChatController {
-    async sendMessage(req, res) {
-        try {
-            const { receiver_id, message } = req.body;
-            const sender_id = req.user.id; // Lấy từ token đăng nhập
-
-            const chat = await chatService.sendMessage(sender_id, receiver_id, message);
-            res.status(201).json({ message: "Message sent successfully", chat });
-        } catch (error) {
-            res.status(400).json({ message: "Failed to send message", error: error.message });
-        }
-    }
-
     async getMessages(req, res) {
         try {
             const { user1_id, user2_id } = req.params;
