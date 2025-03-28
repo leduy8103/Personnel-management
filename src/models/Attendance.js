@@ -16,6 +16,10 @@ const Attendance = sequelize.define('Attendance', {
       key: 'id'
     }
   },
+  status: {
+    type: DataTypes.ENUM('On time', 'Late', 'Absent'),
+    allowNull: false
+  },
   check_in_time: {
     type: DataTypes.DATE,
     allowNull: false,
