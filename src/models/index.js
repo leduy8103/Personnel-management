@@ -16,10 +16,8 @@ ProjectMember.belongsTo(User, { foreignKey: "user_id" });
 
 Project.hasMany(ProjectMember, { foreignKey: "project_id" });
 ProjectMember.belongsTo(Project, { foreignKey: "project_id" });
-const { sequelize } = require('../config/database');
 const Payroll = require('./payroll');
 const Chat = require('./chat');
-const User = require('./User');
 const LeaveRequest = require('./leaveRequest');
 const LeaveBalance = require('./leaveBalance');
 
