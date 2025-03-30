@@ -1,35 +1,28 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { User } = require("../models");
-const { JWT_SECRET } = process.env;
-const leaveService = require("./leaveService");
+const User = require("../models/User");
+const { sendAccountCreatedEmail } = require("./emailService");
+require("dotenv").config();
+const { JWT_SECRET, FRONTEND_URL } = process.env;
 
 const authService = {
   register: async (userData) => {
-    try {
-      // Kiểm tra email đã tồn tại chưa
-      const existingUser = await User.findOne({ where: { email: userData.email } });
-      if (existingUser) {
-        throw new Error("Email đã được sử dụng");
-      }
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    const user = await User.create({ ...userData, password: hashedPassword });
 
-      // Mã hóa mật khẩu
-      const hashedPassword = await bcrypt.hash(userData.password, 10);
-      
-      // Tạo user mới
-      const newUser = await User.create({
-        ...userData,
-        password: hashedPassword,
-        role: userData.role || "user" // Mặc định là user nếu không chỉ định
-      });
+    // Generate reset password link
+    const resetToken = jwt.sign({ id: user.id }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    const resetPasswordLink = `${FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-      // Khởi tạo số ngày nghỉ phép cho user mới
-      await leaveService.initializeLeaveBalance(newUser.id);
+    // Khởi tạo số ngày nghỉ phép cho user mới
+    await leaveService.initializeLeaveBalance(newUser.id);
 
-      return newUser;
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    // Send reset password email
+    await sendAccountCreatedEmail(user.email, resetPasswordLink);
+
+    return user;
   },
 
   login: async (email, password) => {
@@ -75,6 +68,18 @@ const authService = {
 
   getUserRole: (user) => {
     return user.role;
+  },
+
+  resetPassword: async (token, newPassword) => {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findByPk(decoded.id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+    return user;
   },
 };
 

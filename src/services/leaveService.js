@@ -1,4 +1,5 @@
-const { LeaveRequest, LeaveBalance } = require("../models");
+const { LeaveRequest, LeaveBalance, User } = require("../models");
+const { Op } = require("sequelize");
 
 const initializeLeaveBalance = async (userId, initialDays = 12) => {
   try {
@@ -16,7 +17,7 @@ const initializeLeaveBalance = async (userId, initialDays = 12) => {
   }
 };
 
-const requestLeave = async (userId, leaveType, startDate, endDate) => {
+const requestLeave = async (userId, leaveType, startDate, endDate, reason = 'Office') => {
   try {
     const leaveBalance = await initializeLeaveBalance(userId);
     
@@ -29,7 +30,14 @@ const requestLeave = async (userId, leaveType, startDate, endDate) => {
     if (leaveBalance.total_days < diffDays) {
       throw new Error("Bạn không đủ số ngày phép để nghỉ.");
     }
-    const leaveRequest = await LeaveRequest.create({ user_id: userId, leave_type: leaveType, start_date: startDate, end_date: endDate, status: "Pending" });
+    const leaveRequest = await LeaveRequest.create({ 
+      user_id: userId, 
+      leave_type: leaveType, 
+      start_date: startDate, 
+      end_date: endDate, 
+      status: "Pending",
+      reason: reason 
+    });
     return leaveRequest;
   } catch (error) {
     throw new Error(error.message);
@@ -92,9 +100,41 @@ const getLeaveBalance = async (userId) => {
   }
 };
 
+const getAllLeaveRequests = async () => {
+  try {
+    const leaveRequests = await LeaveRequest.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'full_name', 'email', 'department', 'position']
+        }
+      ],
+      order: [['created_at', 'DESC']]
+    });
+    return leaveRequests;
+  } catch (error) {
+    throw new Error("Không thể lấy danh sách yêu cầu nghỉ phép: " + error.message);
+  }
+};
+
+const getUserLeaveRequests = async (userId) => {
+  try {
+    const leaveRequests = await LeaveRequest.findAll({
+      where: { user_id: userId },
+      order: [['created_at', 'DESC']]
+    });
+    return leaveRequests;
+  } catch (error) {
+    throw new Error("Không thể lấy danh sách yêu cầu nghỉ phép của bạn: " + error.message);
+  }
+};
+
 module.exports = { 
   requestLeave, 
   approveLeave, 
   getLeaveBalance,
-  initializeLeaveBalance
+  initializeLeaveBalance,
+  getAllLeaveRequests,
+  getUserLeaveRequests
 };

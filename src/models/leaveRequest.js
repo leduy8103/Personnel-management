@@ -29,6 +29,11 @@ const LeaveRequest = sequelize.define("LeaveRequest", {
     type: DataTypes.DATEONLY,
     allowNull: false,
   },
+  reason: {
+    type: DataTypes.STRING,
+    defaultValue: 'Personal',
+    allowNull: true,
+  },
   status: {
     type: DataTypes.ENUM("Pending", "Approved", "Rejected"),
     defaultValue: "Pending",
@@ -45,5 +50,8 @@ const LeaveRequest = sequelize.define("LeaveRequest", {
   tableName: 'leave_requests',
   timestamps: true
 });
+
+// Không cần định nghĩa quan hệ ở đây nữa vì đã được định nghĩa trong index.js
+// LeaveRequest.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 module.exports = LeaveRequest;
