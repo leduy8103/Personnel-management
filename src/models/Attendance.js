@@ -17,7 +17,7 @@ const Attendance = sequelize.define('Attendance', {
     }
   },
   status: {
-    type: DataTypes.ENUM('On time', 'Late', 'Absent'),
+    type: DataTypes.ENUM('On time', 'Late', 'Absent', 'Leave'),
     allowNull: false
   },
   check_in_time: {
@@ -30,7 +30,7 @@ const Attendance = sequelize.define('Attendance', {
     allowNull: true
   },
   gps_location: {
-    type: DataTypes.STRING(500),
+    type: DataTypes.JSON,
     allowNull: true
   }
 }, {

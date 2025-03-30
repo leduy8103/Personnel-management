@@ -7,7 +7,6 @@ const { connectMongoDB, connetPostgres } = require('./config/database');
 const projectRoutes = require("./apis/routes/projectRoute");
 const taskRoutes = require("./apis/routes/taskRoute");
 const projectMemberRoutes = require("./apis/routes/projectMemberRoute");
-const { connectMongoDB, connetPostgres } = require("./config/database");
 const { Socket } = require("socket.io");
 const payrollRoutes = require('./apis/routes/payrollRoute');
 const chatRoutes = require('./apis/routes/chatRoute');
