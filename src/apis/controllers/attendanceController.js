@@ -77,6 +77,79 @@ const attendanceController = {
       });
     }
   },
+
+  /**
+   * Get current user's attendance status for today
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   */
+  getCurrentUserStatus: async (req, res) => {
+    try {
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({
+          success: false,
+          message: 'Unauthorized: User not authenticated'
+        });
+      }
+      
+      const userId = req.user.id;
+      
+      // Call the service method to get the user's current status
+      const statusData = await attendanceService.getCurrentUserStatus(userId);
+      
+      return res.status(200).json({
+        success: true,
+        message: 'User attendance status retrieved successfully',
+        data: statusData
+      });
+    } catch (error) {
+      console.error('❌ Error retrieving user status:', error);
+      return res.status(400).json({
+        success: false,
+        message: 'Error retrieving user status: ' + error.message
+      });
+    }
+  },
+
+  /**
+   * Get current user's attendance history
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   */
+  getUserAttendanceHistory: async (req, res) => {
+    try {
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({
+          success: false,
+          message: 'Unauthorized: User not authenticated'
+        });
+      }
+      
+      const userId = req.user.id;
+      const { startDate, endDate, status } = req.query;
+      
+      // Get all attendance history for the user
+      const attendanceHistory = await attendanceService.getUserAttendanceHistory(
+        userId, 
+        startDate, 
+        endDate, 
+        status
+      );
+      
+      return res.status(200).json({
+        success: true,
+        message: 'User attendance history retrieved successfully',
+        count: attendanceHistory.length,
+        data: attendanceHistory
+      });
+    } catch (error) {
+      console.error('❌ Error retrieving user attendance history:', error);
+      return res.status(400).json({
+        success: false,
+        message: 'Error retrieving user attendance history: ' + error.message
+      });
+    }
+  }
 };
 
 module.exports = attendanceController;

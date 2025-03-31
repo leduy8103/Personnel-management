@@ -28,9 +28,22 @@ router.post('/check-out',
  * @desc    Get attendance records for a specific user
  * @access  Private (Own records or Admin/Manager)
  */
+router.get('/currentuser',
+  authMiddleware,
+  attendanceController.getCurrentUserStatus);
+
 router.get('/user',
   authMiddleware,
   roleMiddleware(['Manager', 'Admin']),
   managerController.getAllUsersAttendance);
+
+/**
+ * @route   GET /api/attendance/history
+ * @desc    Get current user's attendance history
+ * @access  Private (All authenticated users)
+ */
+router.get('/history',
+  authMiddleware,
+  attendanceController.getUserAttendanceHistory);
 
 module.exports = router;

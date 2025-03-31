@@ -107,13 +107,184 @@ const attendanceService = {
       attendance.gps_location = locationData;
       
       await attendance.save();
-      
+
       return attendance;
     } catch (error) {
       console.error('❌ Error in attendanceService.leave:', error);
       throw error;
     }
   },
+
+  /**
+   * Get current user's attendance status for today
+   * @param {Number} userId - The ID of the user to check
+   * @returns {Object} - User's attendance status for today
+   */
+
+  getCurrentUserStatus: async (userId) => {
+    try {
+      if (!userId) {
+        throw new Error('UserId is required');
+      }
+
+      // Get today's date
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      // Find today's attendance record for the user
+      const attendance = await Attendance.findOne({
+        where: {
+          user_id: userId,
+          check_in_time: {
+            [Op.gte]: today,
+            [Op.lt]: tomorrow
+          }
+        },
+        order: [['check_in_time', 'DESC']]
+      });
+      
+      // Return different responses based on attendance status
+      if (!attendance) {
+        return {
+          is_checked_in: false,
+          is_checked_out: false,
+          status: 'Not Checked In',
+          message: 'You haven\'t checked in today',
+          attendance_data: null,
+          today_date: today.toISOString().split('T')[0]
+        };
+      }
+      
+      if (attendance.check_out_time) {
+        return {
+          is_checked_in: true,
+          is_checked_out: true,
+          status: attendance.status,
+          message: 'You have completed your check-in/out for today',
+          attendance_data: {
+            check_in_time: attendance.check_in_time,
+            check_out_time: attendance.check_out_time,
+            status: attendance.status,
+            id: attendance.id
+          },
+          today_date: today.toISOString().split('T')[0]
+        };
+      }
+      
+      return {
+        is_checked_in: true,
+        is_checked_out: false,
+        status: attendance.status,
+        message: 'You\'re currently checked in',
+        attendance_data: {
+          check_in_time: attendance.check_in_time,
+          status: attendance.status,
+          id: attendance.id
+        },
+        today_date: today.toISOString().split('T')[0]
+      };
+    } catch (error) {
+      console.error('❌ Error in attendanceService.getCurrentUserStatus:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get all attendance history for a user
+   * @param {Number} userId - User ID to get history for
+   * @param {String} startDate - Optional filter by start date (YYYY-MM-DD)
+   * @param {String} endDate - Optional filter by end date (YYYY-MM-DD)
+   * @param {String} status - Optional filter by status
+   * @returns {Array} - All attendance records matching filters
+   */
+  getUserAttendanceHistory: async (userId, startDate = null, endDate = null, status = null) => {
+    try {
+      if (!userId) {
+        throw new Error('UserId is required');
+      }
+        
+      // Build where clause
+      const whereClause = {
+        user_id: userId
+      };
+        
+      // Add date range filter if provided
+      if (startDate || endDate) {
+        whereClause.check_in_time = {};
+          
+        if (startDate) {
+          const start = new Date(startDate);
+          start.setHours(0, 0, 0, 0);
+          whereClause.check_in_time[Op.gte] = start;
+        }
+          
+        if (endDate) {
+          const end = new Date(endDate);
+          end.setHours(23, 59, 59, 999);
+          whereClause.check_in_time[Op.lte] = end;
+        }
+      }
+        
+      // Add status filter if provided
+      if (status) {
+        whereClause.status = status;
+      }
+        
+      // Get all records matching the criteria, ordered by date (most recent first)
+      const attendanceRecords = await Attendance.findAll({
+        where: whereClause,
+        order: [['check_in_time', 'DESC']],
+        include: [
+          {
+            model: User,
+            as: 'User',
+            attributes: ['id', 'full_name', 'department', 'position']
+          }
+        ]
+      });
+        
+      // Format the records for better readability
+      const formattedRecords = attendanceRecords.map(record => {
+        // Get plain object
+        const attendance = record.toJSON ? record.toJSON() : record;
+        const user = attendance.User || {};
+          
+        // Calculate duration if both check-in and check-out times exist
+        let duration = null;
+        if (attendance.check_in_time && attendance.check_out_time) {
+          const checkIn = new Date(attendance.check_in_time);
+          const checkOut = new Date(attendance.check_out_time);
+          const durationMs = checkOut - checkIn;
+            
+          // Format as hours and minutes
+          const hours = Math.floor(durationMs / (1000 * 60 * 60));
+          const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+          duration = `${hours}h ${minutes}m`;
+        }
+          
+        return {
+          id: attendance.id,
+          date: new Date(attendance.check_in_time).toISOString().split('T')[0],
+          day_of_week: new Date(attendance.check_in_time).toLocaleDateString('en-US', { weekday: 'long' }),
+          check_in_time: attendance.check_in_time,
+          check_out_time: attendance.check_out_time || null,
+          status: attendance.status,
+          duration: duration,
+          user_name: user.full_name,
+          department: user.department || 'Not assigned',
+          position: user.position || 'Not assigned'
+        };
+      });
+        
+      return formattedRecords;
+    } catch (error) {
+      console.error('❌ Error in attendanceService.getUserAttendanceHistory:', error);
+      throw error;
+    }
+  }
 };
 
 module.exports = attendanceService;
