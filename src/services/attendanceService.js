@@ -117,7 +117,7 @@ const attendanceService = {
 
   /**
    * Get current user's attendance status for today
-   * @param {Number} userId - The ID of the user to check
+   * @param {String} userId - The ID of the user to check
    * @returns {Object} - User's attendance status for today
    */
 
@@ -194,7 +194,7 @@ const attendanceService = {
 
   /**
    * Get all attendance history for a user
-   * @param {Number} userId - User ID to get history for
+   * @param {String} userId - User ID to get history for
    * @param {String} startDate - Optional filter by start date (YYYY-MM-DD)
    * @param {String} endDate - Optional filter by end date (YYYY-MM-DD)
    * @param {String} status - Optional filter by status
