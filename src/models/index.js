@@ -30,8 +30,6 @@ LeaveRequest.belongsTo(User, { foreignKey: "user_id", as: "user" });
 User.hasOne(LeaveBalance, { foreignKey: "user_id" });
 LeaveBalance.belongsTo(User, { foreignKey: "user_id" });
 
-const Performance_reviews = require("./performance_reviews");
-
 // **Thiết lập quan hệ**
 // User.hasMany(Task, { foreignKey: "user_id" });
 // Task.belongsTo(User, { foreignKey: "user_id" });
