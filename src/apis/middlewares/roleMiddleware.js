@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const roleMiddleware = (roles) => {
   return (req, res, next) => {
