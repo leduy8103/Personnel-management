@@ -1,13 +1,15 @@
 const { LeaveRequest, LeaveBalance } = require("../models");
 
-const initializeLeaveBalance = async (userId, initialDays = 12) => {
+const initializeLeaveBalance = async (userId) => {
   try {
-    let leaveBalance = await LeaveBalance.findOne({ where: { user_id: userId } });
+    let leaveBalance = await LeaveBalance.findOne({
+      where: { user_id: userId },
+    });
     if (!leaveBalance) {
       leaveBalance = await LeaveBalance.create({
         user_id: userId,
-        total_days: initialDays,
-        used_days: 0
+        total_days: 12,
+        used_days: 0,
       });
     }
     return leaveBalance;

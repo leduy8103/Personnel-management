@@ -11,9 +11,19 @@ router.post('/', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectCo
 router.put('/:id', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectController.updateProject);
 router.put('/:id/delete', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectController.deleteProject);
 router.get('/', authMiddleware, roleMiddleware('Admin'), projectController.getProjects);
-router.get('/:id', authMiddleware,roleMiddleware(['Admin', 'Manager']), projectController.getProjectById);
-router.post('/name', authMiddleware, projectController.getProjectByName);
-router.post('/manager', authMiddleware, projectController.getProjectByManager);
+router.get(
+  "/:id",
+  authMiddleware,
+  roleMiddleware(["Admin", "Manager", "Employee", "Account"]),
+  projectController.getProjectById
+);
+router.get("/name", authMiddleware, projectController.getProjectByName);
+router.get(
+  "/manager/:managerId",
+  authMiddleware,
+  projectController.getProjectByManager
+);
+router.get("/user/:userId", authMiddleware, projectController.getProjectByUser);
 router.get('/:id/progress', authMiddleware, projectController.getProjectProgress);
 
 module.exports = router;

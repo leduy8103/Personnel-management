@@ -11,8 +11,8 @@ const ProjectService = {
   getAllProjects: async () => {
     const projects = await Project.findAll({
       where: {
-        isDelete: false
-      }
+        isDelete: false,
+      },
     });
     return projects;
   },
@@ -20,7 +20,7 @@ const ProjectService = {
   getProjectByUser: async (user_id) => {
     const projects = await Project.findAll({
       where: {
-        isDelete: false
+        isDelete: false,
       },
       include: [
         {
@@ -37,20 +37,31 @@ const ProjectService = {
     const project = await Project.findOne({
       where: {
         id,
-        isDelete: false
-      }
+        isDelete: false,
+      },
     });
     return project;
+  },
+
+  getProjectNameById: async (id) => {
+    const project = await Project.findOne({
+      where: {
+        id,
+        isDelete: false,
+      },
+      attributes: ["name"],
+    });
+    return project ? project.name : null;
   },
 
   getProjectByName: async (name) => {
     const projects = await Project.findAll({
       where: {
         name: {
-          [Op.like]: `%${name}%`
+          [Op.like]: `%${name}%`,
         },
-        isDelete: false
-      }
+        isDelete: false,
+      },
     });
     return projects;
   },
@@ -59,8 +70,8 @@ const ProjectService = {
     const projects = await Project.findAll({
       where: {
         manager_id,
-        isDelete: false
-      }
+        isDelete: false,
+      },
     });
     return projects;
   },
@@ -69,7 +80,7 @@ const ProjectService = {
     const project = await Project.findOne({
       where: {
         id,
-        isDelete: false
+        isDelete: false,
       },
       include: [
         {
@@ -94,8 +105,8 @@ const ProjectService = {
     const project = await Project.findOne({
       where: {
         id,
-        isDelete: false
-      }
+        isDelete: false,
+      },
     });
     if (!project) {
       throw new Error("Project not found");
@@ -110,7 +121,7 @@ const ProjectService = {
     if (!project) {
       throw new Error("Project not found");
     }
-    project.isDelete = true; 
+    project.isDelete = true;
     await project.save();
     return project;
   },

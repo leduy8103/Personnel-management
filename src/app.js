@@ -8,13 +8,10 @@ const taskRoutes = require("./apis/routes/taskRoute");
 const projectMemberRoutes = require("./apis/routes/projectMemberRoute");
 const { connectMongoDB, connetPostgres } = require("./config/database");
 const { Socket } = require("socket.io");
-const payrollRoutes = require('./apis/routes/payrollRoute');
-const chatRoutes = require('./apis/routes/chatRoute');
-const leaveRoutes = require('./apis/routes/leaveRoute');
-const { connectMongoDB, connetPostgres } = require('./config/database');
-const userRoutes = require("./apis/routes/userRoute");
+const payrollRoutes = require("./apis/routes/payrollRoute");
+const chatRoutes = require("./apis/routes/chatRoute");
+const leaveRoutes = require("./apis/routes/leaveRoute");
 const prRoutes = require("./apis/routes/prRoute");
-const { connectMongoDB, connetPostgres } = require("./config/database");
 
 const app = express();
 

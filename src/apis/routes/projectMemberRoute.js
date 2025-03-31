@@ -10,6 +10,11 @@ router.post('/', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectMe
 router.delete('/', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectMemberController.removeProjectMember);
 router.get('/:project_id', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectMemberController.getProjectMembers);
 router.get('/', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectMemberController.getAllMembers);
-router.get('/user/:user_id', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectMemberController.getProjectsByMember);
+router.get(
+  "/user/:user_id",
+  authMiddleware,
+  roleMiddleware(["Admin", "Manager", "Employee", "Account"]),
+  projectMemberController.getProjectsByMember
+);
 
 module.exports = router;

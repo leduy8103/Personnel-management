@@ -1,5 +1,6 @@
+const { Sequelize } = require("sequelize"); // Import Sequelize
 const User = require("../models/User");
-const EmployeeDocument = require('../models/EmployeeDocument');
+const EmployeeDocument = require("../models/EmployeeDocument");
 
 const userService = {
   createUser: async (userData) => {
@@ -102,14 +103,13 @@ const userService = {
   },
 
   uploadFile: async (userId, file) => {
-    // Ensure userId is an integer
-    const userIdInt = parseInt(userId, 10);
-    if (isNaN(userIdInt)) {
+    // Ensure userId is a string of length 16
+    if (typeof userId !== "string" || userId.length !== 16) {
       throw new Error("Invalid userId");
     }
 
     const fileData = {
-      employeeId: userIdInt, // Use userId as an integer
+      employeeId: userId, // Use userId as a string
       fileName: file.originalname,
       fileUrl: file.path, // Assuming the file path is stored here
       fileType: file.mimetype.split("/")[1],
@@ -117,7 +117,6 @@ const userService = {
     const uploadedFile = await EmployeeDocument.create(fileData);
     return uploadedFile;
   },
-
   blockUser: async (id) => {
     const user = await User.findOne({ where: { id, status: "Active" } });
     if (!user) {

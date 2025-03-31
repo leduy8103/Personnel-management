@@ -1,4 +1,5 @@
 const userService = require('../../services/userService');
+const notificationService = require("../../services/notificationService");
 
 class UserConroller {
   async getUsers(req, res) {
@@ -36,7 +37,7 @@ class UserConroller {
 
   async getUserByRole(req, res) {
     try {
-      const users = await userService.getUserByRole(req.body.role);
+      const users = await userService.getUserByRole(req.params.role);
       res.status(200).json(users);
     } catch (error) {
       res
@@ -132,6 +133,19 @@ class UserConroller {
       res
         .status(400)
         .json({ message: "Failed to block user", error: error.message });
+    }
+  }
+
+  async getNotificationsByUser(req, res) {
+    try {
+      const notifications = await notificationService.getNotificationsByUser(
+        req.params.id
+      );
+      res.status(200).json(notifications);
+    } catch (error) {
+      res
+        .status(400)
+        .json({ message: "Failed to get notifications", error: error.message });
     }
   }
 }

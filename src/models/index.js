@@ -3,6 +3,12 @@ const User = require("./User");
 const Project = require("./Project");
 const Task = require("./Task");
 const ProjectMember = require("./ProjectMember"); // Import model mới
+const Payroll = require("./payroll");
+const Chat = require("./chat");
+const LeaveRequest = require("./leaveRequest");
+const LeaveBalance = require("./leaveBalance");
+
+const Performance_reviews = require("./performance_reviews");
 
 // **Thiết lập quan hệ**
 User.hasMany(Task, { foreignKey: "user_id" });
@@ -16,14 +22,6 @@ ProjectMember.belongsTo(User, { foreignKey: "user_id" });
 
 Project.hasMany(ProjectMember, { foreignKey: "project_id" });
 ProjectMember.belongsTo(Project, { foreignKey: "project_id" });
-const { sequelize } = require('../config/database');
-const Payroll = require('./payroll');
-const Chat = require('./chat');
-const User = require('./User');
-const LeaveRequest = require('./leaveRequest');
-const LeaveBalance = require('./leaveBalance');
-
-const Performance_reviews = require('./performance_reviews');
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();

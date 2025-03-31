@@ -18,7 +18,7 @@ router.get(
 router.get(
   "/:id",
   authMiddleware,
-  roleMiddleware(["Admin", "Manager"]),
+  roleMiddleware(["Admin", "Manager", "Employee", "Account"]),
   userController.getUserById
 );
 router.get(
@@ -73,7 +73,7 @@ router.post(
   "/:id/upload",
   authMiddleware,
   roleMiddleware(["Admin", "Manager"]),
-  upload.single("file"),
+  upload.single("file"), // Ensure the field name is "file"
   userController.uploadUserFile
 );
 router.put(
@@ -81,6 +81,13 @@ router.put(
   authMiddleware,
   roleMiddleware(["Admin"]),
   userController.blockUser
+);
+
+router.get(
+  "/:id/notifications",
+  authMiddleware,
+  roleMiddleware(["Admin", "Manager", "Employee", "Account"]),
+  userController.getNotificationsByUser
 );
 
 module.exports = router;

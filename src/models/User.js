@@ -1,13 +1,19 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
+const crypto = require("crypto");
+
+// Helper function to generate random string of length 16
+const generateRandomId = () => {
+  return crypto.randomBytes(8).toString("hex"); // 8 bytes = 16 hex characters
+};
 
 const User = sequelize.define(
   "User",
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING(16),
       primaryKey: true,
+      defaultValue: () => generateRandomId(),
     },
     email: {
       type: DataTypes.STRING(255),
@@ -24,6 +30,18 @@ const User = sequelize.define(
     full_name: {
       type: DataTypes.STRING(255),
       allowNull: false,
+    },
+    mobile: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+    },
+    address: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    avatarURL: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
     },
     department: {
       type: DataTypes.STRING(100),

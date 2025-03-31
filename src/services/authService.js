@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const { sendAccountCreatedEmail } = require("./emailService");
+const leaveService = require("./leaveService");
 require("dotenv").config();
 const { JWT_SECRET, FRONTEND_URL } = process.env;
 
@@ -16,8 +17,8 @@ const authService = {
     });
     const resetPasswordLink = `${FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-    // Khởi tạo số ngày nghỉ phép cho user mới
-    await leaveService.initializeLeaveBalance(newUser.id);
+    // // Khởi tạo số ngày nghỉ phép cho user mới
+    await leaveService.initializeLeaveBalance(user.id);
 
     // Send reset password email
     await sendAccountCreatedEmail(user.email, resetPasswordLink);
@@ -26,23 +27,23 @@ const authService = {
   },
 
   login: async (email, password) => {
-    const hardcodedAdmin = {
-      email: "admin@gmail.com",
-      password: "123",
-      role: "Admin",
-    };
-    if (email === hardcodedAdmin.email) {
-      if (password === hardcodedAdmin.password) {
-        const token = jwt.sign(
-          { email: hardcodedAdmin.email, role: hardcodedAdmin.role },
-          JWT_SECRET,
-          { expiresIn: "1h" }
-        );
-        return { user: hardcodedAdmin, token };
-      } else {
-        throw new Error("Invalid password");
-      }
-    }
+    // const hardcodedAdmin = {
+    //   email: "admin@gmail.com",
+    //   password: "123",
+    //   role: "Admin",
+    // };
+    // if (email === hardcodedAdmin.email) {
+    //   if (password === hardcodedAdmin.password) {
+    //     const token = jwt.sign(
+    //       { email: hardcodedAdmin.email, role: hardcodedAdmin.role },
+    //       JWT_SECRET,
+    //       { expiresIn: "1h" }
+    //     );
+    //     return { user: hardcodedAdmin, token };
+    //   } else {
+    //     throw new Error("Invalid password");
+    //   }
+    // }
 
     const user = await User.findOne({ where: { email } });
     if (!user) {

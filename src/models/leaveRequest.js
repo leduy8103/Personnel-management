@@ -1,49 +1,59 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-const User = require("./User"); // Giả sử bạn đã có model User
+const User = require("./User");
+const crypto = require("crypto");
 
-const LeaveRequest = sequelize.define("LeaveRequest", {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  user_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "id",
+// Helper function to generate random string of length 16
+const generateRandomId = () => {
+  return crypto.randomBytes(8).toString("hex"); // 8 bytes = 16 hex characters
+};
+
+const LeaveRequest = sequelize.define(
+  "LeaveRequest",
+  {
+    id: {
+      type: DataTypes.STRING(16),
+      primaryKey: true,
+      defaultValue: () => generateRandomId(),
     },
-    onDelete: "CASCADE",
+    user_id: {
+      type: DataTypes.STRING(16),
+      allowNull: false,
+      references: {
+        model: User,
+        key: "id",
+      },
+      onDelete: "CASCADE",
+    },
+    leave_type: {
+      type: DataTypes.ENUM("Annual", "Sick", "Maternity", "Unpaid"),
+      allowNull: false,
+    },
+    start_date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    end_date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.ENUM("Pending", "Approved", "Rejected"),
+      defaultValue: "Pending",
+    },
+    reject_reason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
   },
-  leave_type: {
-    type: DataTypes.ENUM("Annual", "Sick", "Maternity", "Unpaid"),
-    allowNull: false,
-  },
-  start_date: {
-    type: DataTypes.DATEONLY,
-    allowNull: false,
-  },
-  end_date: {
-    type: DataTypes.DATEONLY,
-    allowNull: false,
-  },
-  status: {
-    type: DataTypes.ENUM("Pending", "Approved", "Rejected"),
-    defaultValue: "Pending",
-  },
-  reject_reason: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-}, {
-  tableName: 'leave_requests',
-  timestamps: true
-});
+  {
+    tableName: "leave_requests",
+    timestamps: true,
+  }
+);
 
 module.exports = LeaveRequest;
