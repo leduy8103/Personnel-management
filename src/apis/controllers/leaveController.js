@@ -5,7 +5,7 @@ const roleMiddleware = require("../middlewares/roleMiddleware");
 const requestLeave = async (req, res) => {
   try {
     const userId = req.user.id; // Lấy userId từ token đã decode
-    const { leaveType, startDate, endDate } = req.body;
+    const { leaveType, startDate, endDate, reason } = req.body;
     
     // Thêm validation
     if (!leaveType || !startDate || !endDate) {
@@ -15,7 +15,7 @@ const requestLeave = async (req, res) => {
       });
     }
 
-    const leaveRequest = await leaveService.requestLeave(userId, leaveType, startDate, endDate);
+    const leaveRequest = await leaveService.requestLeave(userId, leaveType, startDate, endDate, reason);
     res.status(200).json({
       success: true,
       data: leaveRequest
@@ -107,4 +107,45 @@ const processLeaveRequest = async (req, res) => {
   }
 };
 
-module.exports = { requestLeave, approveLeave, getLeaveBalance, initializeUserLeaveBalance, processLeaveRequest };
+// Lấy tất cả đơn nghỉ phép (cho admin và manager)
+const getAllLeaveRequests = async (req, res) => {
+  try {
+    const leaveRequests = await leaveService.getAllLeaveRequests();
+    res.status(200).json({
+      success: true,
+      data: leaveRequests
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// Lấy đơn nghỉ phép của user hiện tại
+const getUserLeaveRequests = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const leaveRequests = await leaveService.getUserLeaveRequests(userId);
+    res.status(200).json({
+      success: true,
+      data: leaveRequests
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+module.exports = { 
+  requestLeave, 
+  approveLeave, 
+  getLeaveBalance, 
+  initializeUserLeaveBalance, 
+  processLeaveRequest,
+  getAllLeaveRequests,
+  getUserLeaveRequests
+};

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const authRoutes = require('./apis/routes/authRoute');
+const userRoutes = require("./apis/routes/userRoute");
 const projectRoutes = require("./apis/routes/projectRoute");
 const taskRoutes = require("./apis/routes/taskRoute");
 const projectMemberRoutes = require("./apis/routes/projectMemberRoute");
@@ -10,7 +11,6 @@ const { Socket } = require("socket.io");
 const payrollRoutes = require('./apis/routes/payrollRoute');
 const chatRoutes = require('./apis/routes/chatRoute');
 const leaveRoutes = require('./apis/routes/leaveRoute');
-const userRoutes = require("./apis/routes/userRoute");
 const prRoutes = require("./apis/routes/prRoute");
 
 const app = express();

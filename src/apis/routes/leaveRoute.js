@@ -39,4 +39,19 @@ router.get(
   leaveController.getLeaveBalance
 );
 
+// Route lấy tất cả đơn nghỉ phép - cho admin và manager
+router.get(
+  "/all-requests", 
+  authMiddleware, 
+  roleMiddleware(['Manager', 'Admin']),
+  leaveController.getAllLeaveRequests
+);
+
+// Route lấy đơn nghỉ phép của user hiện tại
+router.get(
+  "/my-requests", 
+  authMiddleware, 
+  leaveController.getUserLeaveRequests
+);
+
 module.exports = router;

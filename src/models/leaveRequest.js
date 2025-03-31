@@ -56,4 +56,7 @@ const LeaveRequest = sequelize.define(
   }
 );
 
+// Không cần định nghĩa quan hệ ở đây nữa vì đã được định nghĩa trong index.js
+// LeaveRequest.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
 module.exports = LeaveRequest;
