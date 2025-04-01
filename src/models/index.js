@@ -1,5 +1,7 @@
-const { sequelize } = require("../config/database"); // Ensure correct import
-const User = require("./User");
+const { sequelize } = require('../config/database');
+const Attendance = require('./Attendance');
+const Overtime = require('./Overtime');
+const User = require('./User');
 const Project = require("./Project");
 const Task = require("./Task");
 const ProjectMember = require("./ProjectMember"); // Import model mới
