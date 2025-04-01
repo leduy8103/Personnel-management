@@ -2,32 +2,35 @@ const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 const User = require('./User');
 
-const Overtime = sequelize.define('Overtime', {
+const Overtime = sequelize.define(
+  "Overtime",
+  {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
     },
     user_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(16),
       allowNull: false,
       references: {
         model: User,
-        key: 'id'
-      }
+        key: "id",
+      },
     },
     hours: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: false,
     },
     reason: {
       type: DataTypes.STRING,
-      allowNull: true
-    }
-  }, {
-    tableName: 'overtime',
-    timestamps: false
-  });
+      allowNull: true,
+    },
+  },
+  {
+    tableName: "overtime",
+    timestamps: false,
+  }
+);
   
   module.exports = Overtime;
-  
