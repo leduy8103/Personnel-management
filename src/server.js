@@ -1,38 +1,34 @@
-// server.js
 const app = require('./app');
-const http = require('http');
-const socketIO = require('socket.io');
-require('dotenv').config();
+const http = require("http");
+const socket = require("./socket");
+const { PORT } = process.env;
 
 const server = http.createServer(app);
-const io = socketIO(server, {
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
-});
+const io = socket.init(server);
 
-// Lắng nghe kết nối WebSocket
-io.on('connection', (socket) => {
-  console.log('🟢 New client connected:', socket.id);
+// Socket.io connection
+io.on("connection", (socket) => {
+  console.log("New client connected");
 
-  socket.on('send_message', async (data) => {
-    const { sender_id, receiver_id, message } = data;
-
-    // Lưu tin nhắn vào MongoDB
-    const Chat = require('./models/chat');
-    const savedMessage = await Chat.create({ sender_id, receiver_id, message });
-
-    // Gửi lại cho cả hai người dùng
-    io.emit('receive_message', savedMessage); // broadcast cho tất cả
+  socket.on("join", (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} joined room`);
   });
 
-  socket.on('disconnect', () => {
-    console.log('🔴 Client disconnected:', socket.id);
+  // Xử lý sự kiện gửi tin nhắn
+  socket.on("sendMessage", (message) => {
+    console.log("Message received:", message);
+
+    // Phát tin nhắn đến người nhận
+    io.to(message.receiver_id).emit("receiveMessage", message);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
   });
 });
 
-const PORT = process.env.PORT || 3000;
+// Start the server
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

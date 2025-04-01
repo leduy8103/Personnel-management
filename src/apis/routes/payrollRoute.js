@@ -5,6 +5,9 @@ const roleMiddleware = require('../middlewares/roleMiddleware');
 
 const router = express.Router();
 
+// Lấy tất cả bảng lương (chỉ Admin & Accountant)
+router.get('/all', authMiddleware, roleMiddleware(['Admin', 'Accountant']), PayrollController.getAllPayrolls);
+
 // Tạo bảng lương (chỉ Admin & Accountant)
 router.post('/create', authMiddleware, roleMiddleware(['Admin', 'Accountant']), PayrollController.createPayroll);
 
@@ -16,5 +19,7 @@ router.get('/statistics', authMiddleware, roleMiddleware(['Admin', 'Accountant']
 
 // Xuất bảng lương (JSON hoặc PDF)
 router.get('/export/:employeeId', authMiddleware, PayrollController.exportPayroll);
+
+router.delete('/delete/:payrollId', authMiddleware, roleMiddleware(['Admin', 'Accountant']), PayrollController.deletePayroll);
 
 module.exports = router;

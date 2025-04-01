@@ -6,7 +6,18 @@ class AuthController {
       const user = await authService.register(req.body);
       res.status(201).json({ message: 'User registered successfully', user });
     } catch (error) {
-      res.status(400).json({ message: 'User registration failed', error: error.message });
+      // Log detailed validation error
+      if (error.name === "SequelizeValidationError") {
+        const validationErrors = error.errors.map((err) => err.message);
+        res.status(400).json({
+          message: "User registration failed",
+          errors: validationErrors,
+        });
+      } else {
+        res
+          .status(400)
+          .json({ message: "User registration failed", error: error.message });
+      }
     }
   }
 
