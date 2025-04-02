@@ -1,11 +1,14 @@
 const express = require('express'); 
 const multer = require('multer');
 const router = express.Router();
-const UserController = require('../controllers/userController');
+const path = require("path");
+const UserController = require("../controllers/userController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const roleMiddleware = require("../middlewares/roleMiddleware");
 
 const upload = multer({ dest: "uploads/" }); // Configure multer for file uploads
+
+
 
 const userController = new UserController();
 

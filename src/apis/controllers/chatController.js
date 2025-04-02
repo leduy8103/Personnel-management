@@ -31,6 +31,15 @@ class ChatController {
             res.status(400).json({ message: 'Failed to fetch chat list', error: error.message });
         }
     }
+
+    async getAllEmployees(req, res) {
+        try {
+            const employees = await chatService.getAllEmployees();
+            res.status(200).json({ employees });
+        } catch (error) {
+            res.status(400).json({ message: 'Failed to fetch employees', error: error.message });
+        }
+    }
 }
 
 module.exports = new ChatController();

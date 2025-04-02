@@ -32,6 +32,10 @@ LeaveRequest.belongsTo(User, { foreignKey: "user_id", as: "user" });
 User.hasOne(LeaveBalance, { foreignKey: "user_id" });
 LeaveBalance.belongsTo(User, { foreignKey: "user_id" });
 
+// Thiết lập quan hệ giữa User và Payroll
+User.hasMany(Payroll, { foreignKey: "employee_id", as: "payrolls" });
+Payroll.belongsTo(User, { foreignKey: "employee_id", as: "employee" });
+
 // **Thiết lập quan hệ**
 // User.hasMany(Task, { foreignKey: "user_id" });
 // Task.belongsTo(User, { foreignKey: "user_id" });

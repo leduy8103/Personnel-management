@@ -29,7 +29,14 @@ const chatService = {
             attributes: ['sender_id', 'receiver_id'],
             group: ['sender_id', 'receiver_id']
         });
+    },
+
+    getAllEmployees: async () => {
+        return await User.findAll({
+            attributes: ['id', 'full_name', 'email', 'department', 'position']
+        });
     }
+
 };
 
 module.exports = chatService;

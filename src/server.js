@@ -15,6 +15,14 @@ io.on("connection", (socket) => {
     console.log(`User ${userId} joined room`);
   });
 
+  // Xử lý sự kiện gửi tin nhắn
+  socket.on("sendMessage", (message) => {
+    console.log("Message received:", message);
+
+    // Phát tin nhắn đến người nhận
+    io.to(message.receiver_id).emit("receiveMessage", message);
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });

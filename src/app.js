@@ -4,14 +4,14 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./apis/routes/authRoute');
 const userRoutes = require("./apis/routes/userRoute");
 const attendanceRoutes = require('./apis/routes/attendanceRoute');
-const { connectMongoDB, connetPostgres } = require('./config/database');
+const { connectMongoDB, connetPostgres } = require("./config/database");
 const projectRoutes = require("./apis/routes/projectRoute");
 const taskRoutes = require("./apis/routes/taskRoute");
 const projectMemberRoutes = require("./apis/routes/projectMemberRoute");
 const { Socket } = require("socket.io");
-const payrollRoutes = require('./apis/routes/payrollRoute');
-const chatRoutes = require('./apis/routes/chatRoute');
-const leaveRoutes = require('./apis/routes/leaveRoute');
+const payrollRoutes = require("./apis/routes/payrollRoute");
+const chatRoutes = require("./apis/routes/chatRoute");
+const leaveRoutes = require("./apis/routes/leaveRoute");
 const prRoutes = require("./apis/routes/prRoute");
 
 const app = express();
@@ -20,6 +20,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/assets", express.static("src/assets"));
 
 // Routes
 app.use('/api/auth', authRoutes);

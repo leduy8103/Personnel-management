@@ -3,8 +3,15 @@ const authService = require('../../services/authService');
 class AuthController {
   async register(req, res) {
     try {
-      const user = await authService.register(req.body);
-      res.status(201).json({ message: 'User registered successfully', user });
+      // Thêm avatarURL vào req.body nếu có file upload
+      const userData = req.body;
+
+      if (req.file) {
+        userData.avatarURL = `/assets/avatar/${req.file.filename}`;
+      }
+
+      const user = await authService.register(userData);
+      res.status(201).json({ message: "User registered successfully", user });
     } catch (error) {
       // Log detailed validation error
       if (error.name === "SequelizeValidationError") {
