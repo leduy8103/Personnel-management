@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const { DataTypes, Sequelize } = require('sequelize');  // Add Sequelize import
+const { sequelize } = require('../config/database'); 
 const User = require('./User');
 const crypto = require("crypto");
 
@@ -27,7 +27,11 @@ const Chat = sequelize.define(
       allowNull: false,
     },
     message: { type: DataTypes.TEXT, allowNull: false },
-    timestamp: { type: DataTypes.DATE, defaultValue: Sequelize.NOW },
+    timestamp: { type: DataTypes.DATE, defaultValue: Sequelize.literal('CURRENT_TIMESTAMP') },
+    read: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   },
   { tableName: "chats", timestamps: false }
 );

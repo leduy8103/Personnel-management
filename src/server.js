@@ -1,34 +1,22 @@
 const app = require('./app');
-const http = require("http");
-const socket = require("./socket");
-const { PORT } = process.env;
+const http = require('http');
+const socketIO = require('socket.io');
+const socketModule = require('./socket');
+require('dotenv').config();
 
+// Create the HTTP server
 const server = http.createServer(app);
-const io = socket.init(server);
 
-// Socket.io connection
-io.on("connection", (socket) => {
-  console.log("New client connected");
+// Initialize socket.io using the socket module
+const io = socketModule.init(server);
 
-  socket.on("join", (userId) => {
-    socket.join(userId);
-    console.log(`User ${userId} joined room`);
-  });
+// Make io available to our routes
+app.set('io', io);
 
-  // Xử lý sự kiện gửi tin nhắn
-  socket.on("sendMessage", (message) => {
-    console.log("Message received:", message);
-
-    // Phát tin nhắn đến người nhận
-    io.to(message.receiver_id).emit("receiveMessage", message);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });
-});
+const PORT = process.env.PORT || 3000;
 
 // Start the server
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Socket.IO listening on port ${PORT}`);
 });

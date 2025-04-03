@@ -30,6 +30,11 @@ app.use("/api/project-member", projectMemberRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/chat', chatRoutes);
 
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
 
 app.use('/api/leave', leaveRoutes);
 app.use("/api/pr", prRoutes);
