@@ -1,20 +1,23 @@
 # Base image
 FROM node:18
 
-# Set working directory
-WORKDIR /app
+# Tạo thư mục làm việc
+WORKDIR /usr/src/app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Cài dependencies
 RUN npm install
 
-# Copy the rest of the code
+# Copy toàn bộ source code
 COPY . .
 
-# Expose port
+# Bật production mode (nếu có dùng)
+ENV NODE_ENV=production
+
+# Expose cổng backend (tùy bạn config, giả sử là 3000)
 EXPOSE 3000
 
-# Start app
+# Command để chạy ứng dụng
 CMD ["npm", "start"]
