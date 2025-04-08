@@ -1,6 +1,8 @@
-FROM node:18-alpine
+# Base image
+FROM node:18
 
-WORKDIR /usr/src/app
+# Set working directory
+WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
@@ -8,13 +10,11 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Copy source code
+# Copy the rest of the code
 COPY . .
 
-# Create directory for avatar uploads
-RUN mkdir -p src/assets/avatar
-
-# Expose port from .env
+# Expose port
 EXPOSE 3000
 
+# Start app
 CMD ["npm", "start"]
