@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: erp-hr-fullstack
-    env: docker
-    plan: free
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
-    autoDeploy: true
