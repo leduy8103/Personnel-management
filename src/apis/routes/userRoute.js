@@ -87,10 +87,28 @@ router.put(
 );
 
 router.get(
+  "/blocked/all",
+  authMiddleware,
+  roleMiddleware(["Admin"]),
+  userController.getBlockedUsers
+);
+
+router.put(
+  "/:id/unblock",
+  authMiddleware,
+  roleMiddleware(["Admin"]),
+  userController.unblockUser
+);
+
+router.get(
   "/:id/notifications",
   authMiddleware,
   roleMiddleware(["Admin", "Manager", "Employee", "Account"]),
   userController.getNotificationsByUser
 );
+
+router.post("/request-password-reset", userController.requestPasswordReset);
+
+router.post("/reset-password", userController.resetPassword);
 
 module.exports = router;

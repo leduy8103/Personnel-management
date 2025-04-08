@@ -1,10 +1,15 @@
 const Project = require("../models/Project");
 const Task = require("../models/Task");
-const { Op } = require('sequelize');
+const ProjectMember = require("../models/ProjectMember");
+const { Op } = require("sequelize");
+const projectMemberService = require("./projectMemberService");
+const notificationService = require("./notificationService");
 
 const ProjectService = {
   createProject: async (projectData) => {
     const project = await Project.create(projectData);
+    // Add project manager as a member
+    await projectMemberService.addProjectMember(project.id, project.manager_id);
     return project;
   },
 
@@ -121,9 +126,48 @@ const ProjectService = {
     if (!project) {
       throw new Error("Project not found");
     }
+
+    // Get all project members before deletion
+    const projectMembers = await projectMemberService.getProjectMembers(id);
+
+    // Mark project as deleted
     project.isDelete = true;
     await project.save();
-    return project;
+
+    // Update all related tasks and project members
+    await Promise.all([
+      Task.update({ isDelete: true }, { where: { project_id: id } }),
+      ProjectMember.update({ isDelete: true }, { where: { project_id: id } }),
+    ]);
+
+    // Notify all project members
+    for (const member of projectMembers) {
+      await notificationService.createNotification(
+        member.user_id,
+        "PROJECT_REMOVED",
+        `Project "${project.name}" has been deleted`,
+        "/projects"
+      );
+    }
+
+    return null;
+  },
+
+  getMemberProjects: async (userId) => {
+    const projects = await Project.findAll({
+      include: [
+        {
+          model: require("../models/ProjectMember"),
+          as: "projectMembers",
+          where: { user_id: userId },
+          required: true,
+        },
+      ],
+      where: {
+        isDelete: false,
+      },
+    });
+    return projects;
   },
 };
 

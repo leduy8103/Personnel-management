@@ -9,7 +9,7 @@ const projectMemberController = new ProjectMemberController();
 router.post('/', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectMemberController.addProjectMember);
 router.delete('/', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectMemberController.removeProjectMember);
 router.get('/:project_id', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectMemberController.getProjectMembers);
-router.get('/', authMiddleware, roleMiddleware(['Admin', 'Manager']), projectMemberController.getAllMembers);
+router.get("/", authMiddleware, projectMemberController.getAllMembers);
 router.get(
   "/user/:user_id",
   authMiddleware,

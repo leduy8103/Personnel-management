@@ -9,7 +9,12 @@ const userService = {
   },
 
   getAllUsers: async () => {
-    const users = await User.findAll({ where: { status: "Active" } });
+    const users = await User.findAll({
+      where: {
+        status: "Active",
+        isDelete: false,
+      },
+    });
     if (users.length === 0) {
       throw new Error("No active users found");
     }
@@ -17,7 +22,13 @@ const userService = {
   },
 
   getUserById: async (id) => {
-    const user = await User.findOne({ where: { id, status: "Active" } });
+    const user = await User.findOne({
+      where: {
+        id,
+        status: "Active",
+        isDelete: false,
+      },
+    });
     if (!user) {
       throw new Error("User not found");
     }
@@ -25,7 +36,13 @@ const userService = {
   },
 
   getUserByName: async (name) => {
-    const user = await User.findOne({ where: { name, status: "Active" } });
+    const user = await User.findOne({
+      where: {
+        name,
+        status: "Active",
+        isDelete: false,
+      },
+    });
     if (!user) {
       throw new Error("User not found");
     }
@@ -33,7 +50,13 @@ const userService = {
   },
 
   getUserByEmail: async (email) => {
-    const user = await User.findOne({ where: { email, status: "Active" } });
+    const user = await User.findOne({
+      where: {
+        email,
+        status: "Active",
+        isDelete: false,
+      },
+    });
     if (!user) {
       throw new Error("User not found");
     }
@@ -41,7 +64,13 @@ const userService = {
   },
 
   getUserByRole: async (role) => {
-    const users = await User.findAll({ where: { role, status: "Active" } });
+    const users = await User.findAll({
+      where: {
+        role,
+        status: "Active",
+        isDelete: false,
+      },
+    });
     if (users.length === 0) {
       throw new Error("No active users found with the specified role");
     }
@@ -58,7 +87,11 @@ const userService = {
 
   getUserByDepartment: async (department) => {
     const users = await User.findAll({
-      where: { department, status: "Active" },
+      where: {
+        department,
+        status: "Active",
+        isDelete: false,
+      },
     });
     if (users.length === 0) {
       throw new Error("No active users found in the specified department");
@@ -67,7 +100,13 @@ const userService = {
   },
 
   getUserByPosition: async (position) => {
-    const users = await User.findAll({ where: { position, status: "Active" } });
+    const users = await User.findAll({
+      where: {
+        position,
+        status: "Active",
+        isDelete: false,
+      },
+    });
     if (users.length === 0) {
       throw new Error("No active users found with the specified position");
     }
@@ -76,7 +115,11 @@ const userService = {
 
   getUserByMultipleFields: async (fields) => {
     const users = await User.findAll({
-      where: { ...fields, status: "Active" },
+      where: {
+        ...fields,
+        status: "Active",
+        isDelete: false,
+      },
     });
     if (users.length === 0) {
       throw new Error("No active users found with the specified fields");
@@ -85,7 +128,13 @@ const userService = {
   },
 
   updateUser: async (id, userData) => {
-    const user = await User.findOne({ where: { id, status: "Active" } });
+    const user = await User.findOne({
+      where: {
+        id,
+        status: "Active",
+        isDelete: false,
+      },
+    });
     if (!user) {
       throw new Error("User not found");
     }
@@ -95,11 +144,18 @@ const userService = {
   },
 
   deleteUser: async (id) => {
-    const user = await User.findOne({ where: { id, status: "Active" } });
+    const user = await User.findOne({
+      where: {
+        id,
+        isDelete: false,
+      },
+    });
     if (!user) {
       throw new Error("User not found");
     }
-    await user.destroy();
+    user.isDelete = true;
+    await user.save();
+    return user;
   },
 
   uploadFile: async (userId, file) => {
@@ -117,12 +173,48 @@ const userService = {
     const uploadedFile = await EmployeeDocument.create(fileData);
     return uploadedFile;
   },
+
   blockUser: async (id) => {
-    const user = await User.findOne({ where: { id, status: "Active" } });
+    const user = await User.findOne({
+      where: {
+        id,
+        status: "Active",
+        isDelete: false,
+      },
+    });
     if (!user) {
       throw new Error("User not found");
     }
     user.status = "Inactive";
+    await user.save();
+    return user;
+  },
+
+  getBlockedUsers: async () => {
+    const users = await User.findAll({
+      where: {
+        status: "Inactive",
+        isDelete: false,
+      },
+    });
+    if (users.length === 0) {
+      throw new Error("No blocked users found");
+    }
+    return users;
+  },
+
+  unblockUser: async (id) => {
+    const user = await User.findOne({
+      where: {
+        id,
+        status: "Inactive",
+        isDelete: false,
+      },
+    });
+    if (!user) {
+      throw new Error("Blocked user not found");
+    }
+    user.status = "Active";
     await user.save();
     return user;
   },

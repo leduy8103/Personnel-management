@@ -17,7 +17,7 @@ router.get(
   roleMiddleware(["Admin", "Manager", "Employee", "Account"]),
   projectController.getProjectById
 );
-router.get("/name", authMiddleware, projectController.getProjectByName);
+router.post("/name", authMiddleware, projectController.getProjectByName);
 router.get(
   "/manager/:managerId",
   authMiddleware,

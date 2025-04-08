@@ -1,14 +1,20 @@
 const ProjectMember = require("../models/ProjectMember");
+const Project = require("../models/Project");
+const Task = require("../models/Task");
 const notificationService = require("./notificationService");
-const projectService = require("./projectService");
-const { get } = require("mongoose");
 
 const ProjectMemberService = {
   addProjectMember: async (project_id, user_id) => {
     const member = await ProjectMember.create({ project_id, user_id });
-    const projectName = await projectService.getProjectNameById(project_id);
+
+    // Get project name directly from Project model
+    const project = await Project.findOne({
+      where: { id: project_id },
+      attributes: ["name"],
+    });
+
     const message = `You have been added to project "${
-      projectName || "Unknown"
+      project?.name || "Unknown"
     }"`;
     const link = `/projects/${project_id}`;
     await notificationService.createNotification(
@@ -37,9 +43,9 @@ const ProjectMemberService = {
     // Get the project IDs
     const projectIds = projectMembers.map((member) => member.project_id);
 
-    // Get complete project data for each project using projectService
+    // Get complete project data for each project using Project model
     const projectPromises = projectIds.map((projectId) =>
-      projectService.getProjectById(projectId)
+      Project.findOne({ where: { id: projectId } })
     );
 
     const projects = await Promise.all(projectPromises);
@@ -55,12 +61,21 @@ const ProjectMemberService = {
     if (!member) {
       throw new Error("Project member not found");
     }
+
+    // Get project name before removing member
+    const project = await Project.findOne({
+      where: { id: project_id },
+      attributes: ["name"],
+    });
+
+    // Unassign all tasks assigned to this member in this project
+    await Task.update({ user_id: null }, { where: { project_id, user_id } });
+
     await member.destroy();
 
     // Send notification
-    const projectName = await projectService.getProjectNameById(project_id);
     const message = `You have been removed from project "${
-      projectName || "Unknown"
+      project?.name || "Unknown"
     }"`;
     const link = `/projects/${project_id}`;
     await notificationService.createNotification(

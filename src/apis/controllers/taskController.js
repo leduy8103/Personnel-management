@@ -4,6 +4,15 @@ class TaskController {
     async createTask(req, res) {
         try {
             const taskData = req.body;
+            
+            // Validate required fields
+            if (!taskData.title || !taskData.project_id) {
+                return res.status(400).json({
+                    message: "Validation failed",
+                    error: "Task title and project ID are required"
+                });
+            }
+
             const task = await TaskService.createTask(taskData);
             res.status(201).json(task);
         } catch (error) {
@@ -15,6 +24,15 @@ class TaskController {
         try {
             const task_id = req.params.id;
             const { user_id } = req.body;
+            
+            // Validate required fields
+            if (!task_id || !user_id) {
+                return res.status(400).json({
+                    message: "Validation failed",
+                    error: "Task ID and User ID are required"
+                });
+            }
+
             const task = await TaskService.assignTask(task_id, user_id);
             res.status(200).json(task);
         } catch (error) {
@@ -24,10 +42,33 @@ class TaskController {
 
     async updateTaskStatus(req, res) {
         try {
-            const { id } = req.params;
-            const { status } = req.body;
-            const task = await TaskService.updateTaskStatus(id, status);
-            res.status(200).json(task);
+          const { id } = req.params;
+          const { status } = req.body;
+
+          // Validate required fields
+          if (!id || !status) {
+            return res.status(400).json({
+              message: "Validation failed",
+              error: "Task ID and status are required",
+            });
+          }
+
+          // Validate status value
+          const validStatuses = [
+            "Pending",
+            "In Progress",
+            "Completed",
+            "Cancelled",
+          ];
+          if (!validStatuses.includes(status)) {
+            return res.status(400).json({
+              message: "Validation failed",
+              error: "Invalid status value",
+            });
+          }
+
+          const task = await TaskService.updateTaskStatus(id, status);
+          res.status(200).json(task);
         } catch (error) {
             res.status(400).json({ message: 'Failed to update task status', error: error.message });
         }

@@ -94,6 +94,16 @@ const TaskService = {
     }
     task.isDelete = true;
     await task.save();
+
+    // Notify assigned user if task was assigned
+    if (task.user_id) {
+      await notificationService.createNotification(
+        task.user_id,
+        "TASK_DELETED",
+        `Task "${task.description}" has been deleted`,
+        "/tasks"
+      );
+    }
   },
 };
 

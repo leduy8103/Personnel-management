@@ -1,5 +1,6 @@
 const userService = require('../../services/userService');
 const notificationService = require("../../services/notificationService");
+const authService = require("../../services/authService");
 
 class UserConroller {
   async getUsers(req, res) {
@@ -48,7 +49,7 @@ class UserConroller {
 
   async getUserByStatus(req, res) {
     try {
-      const users = await userService.getUserByStatus(req.body.status);
+      const users = await userService.getUserByStatus(req.params.status);
       res.status(200).json(users);
     } catch (error) {
       res
@@ -136,6 +137,28 @@ class UserConroller {
     }
   }
 
+  async getBlockedUsers(req, res) {
+    try {
+      const users = await userService.getBlockedUsers();
+      res.status(200).json(users);
+    } catch (error) {
+      res
+        .status(400)
+        .json({ message: "Failed to get blocked users", error: error.message });
+    }
+  }
+
+  async unblockUser(req, res) {
+    try {
+      const user = await userService.unblockUser(req.params.id);
+      res.status(200).json(user);
+    } catch (error) {
+      res
+        .status(400)
+        .json({ message: "Failed to unblock user", error: error.message });
+    }
+  }
+
   async getNotificationsByUser(req, res) {
     try {
       const notifications = await notificationService.getNotificationsByUser(
@@ -146,6 +169,38 @@ class UserConroller {
       res
         .status(400)
         .json({ message: "Failed to get notifications", error: error.message });
+    }
+  }
+
+  async requestPasswordReset(req, res) {
+    try {
+      const { email } = req.body;
+      const resetLink = await authService.generateResetToken(email);
+      res.status(200).json({
+        message: "Password reset email sent successfully",
+        resetLink, // Only include in development environment
+      });
+    } catch (error) {
+      res.status(400).json({
+        message: "Failed to request password reset",
+        error: error.message,
+      });
+    }
+  }
+
+  async resetPassword(req, res) {
+    try {
+      const { token, newPassword } = req.body;
+      const user = await authService.resetPassword(token, newPassword);
+      res.status(200).json({
+        message: "Password reset successful",
+        userId: user.id,
+      });
+    } catch (error) {
+      res.status(400).json({
+        message: "Failed to reset password",
+        error: error.message,
+      });
     }
   }
 }

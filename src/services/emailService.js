@@ -20,18 +20,20 @@ const sendAccountCreatedEmail = async (email, resetPasswordLink) => {
     await transporter.sendMail({
       from: `"Admin" <${process.env.SMTP_USER}>`,
       to: email,
-      subject: 'Thông báo tài khoản mới',
+      subject: "Reset Your Password",
       html: `
-        <h3>Chào bạn,</h3>
-        <p>Admin đã cấp cho bạn một tài khoản mới.</p>
-        <p>Bạn vui lòng đặt lại mật khẩu bằng cách nhấn vào link bên dưới:</p>
-        <a href="${resetPasswordLink}" style="color:blue;">Đặt lại mật khẩu</a>
-        <p>Cảm ơn bạn!</p>
+        <h3>Hello,</h3>
+        <p>A password reset has been requested for your account.</p>
+        <p>Please click the link below to reset your password. This link will expire in 1 hour:</p>
+        <a href="${resetPasswordLink}" style="padding: 10px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+        <p>If you didn't request this, please ignore this email.</p>
+        <p>Thank you!</p>
       `,
     });
-    console.log(`📩 Email đã gửi thành công tới ${email}`);
+    console.log(`📩 Reset password email sent successfully to ${email}`);
   } catch (error) {
-    console.error(`❌ Lỗi gửi email tới ${email}:`, error);
+    console.error(`❌ Error sending reset email to ${email}:`, error);
+    throw error;
   }
 };
 
